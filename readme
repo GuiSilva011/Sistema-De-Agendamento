@@ -1,1 +1,94 @@
-Iniciando o projeto
+ Sistema de Agendamentos em Python
+
+Sistema completo de agendamentos desenvolvido em Python, com interface gráfica, banco de dados SQLite e autenticação de usuários.
+Projeto criado para fins acadêmicos e portfólio, aplicando conceitos de CRUD, banco de dados, organização em camadas e interface desktop.
+
+Funcionalidades
+
+Login de usuário
+
+Cadastro de agendamentos
+
+Consulta de agendamentos por data
+
+Interface gráfica (Tkinter)
+
+Banco de dados SQLite
+
+Estrutura modular do projeto
+
+Tecnologias Utilizadas
+
+Python 3
+
+SQLite
+
+Tkinter (interface gráfica nativa do Python)
+
+Estrutura do Projeto
+sistema_agendamento/
+│
+├── criar_bd.py      # Cria o banco e as tabelas
+├── banco.py         # Conexão com o banco
+├── login.py         # Verificação de usuário
+├── sistema.py       # Regras de negócio dos agendamentos
+├── interface.py     # Interface gráfica (Front-End)
+└── agendamentos.db  # Banco de dados SQLite
+
+Banco de Dados
+Tabela usuarios
+Campo	Tipo
+id	INTEGER
+usuario	TEXT
+senha	TEXT
+Tabela agendamentos
+Campo	Tipo
+id	INTEGER
+nome_cliente	TEXT
+servico	TEXT
+data	TEXT
+hora	TEXT
+
+Como Executar o Projeto
+
+Instale o Python 3
+
+Baixe ou clone este repositório
+
+Abra o terminal dentro da pasta do projeto
+
+Execute:
+
+python criar_bd.py
+python interface.py
+
+ Login Padrão
+Usuário: admin
+Senha: 123
+
+ Telas do Sistema
+
+Tela de Login
+
+Tela de Cadastro de Agendamentos
+
+Busca de agendamentos por data
+
+ Objetivo do Projeto
+
+Este projeto demonstra na prática:
+
+Manipulação de banco de dados com SQLite
+
+Desenvolvimento de aplicações desktop
+
+Separação de responsabilidades (dados, regras e interface)
+
+Implementação de autenticação
+
+Operações CRUD (Create, Read)
+
+ Autor
+
+Thiago Fatigati Palma
+Estudante de Análise e Desenvolvimento de Sistemas
