@@ -38,7 +38,7 @@ def tela_principal():
     entry_servico = tk.Entry(frame, width=30)
     entry_servico.grid(row=3, column=1, pady=5)
     
-    tk.Label(frame, text="Data (AAAA-MM-DD):", bg="#f2f2f2").grid(row=4, column=0, sticky="e")
+    tk.Label(frame, text="Data (DD-MM-YYYY):", bg="#f2f2f2").grid(row=4, column=0, sticky="e")
     entry_data = tk.Entry(frame, width=30)
     entry_data.grid(row=4, column=1, pady=5)
 
@@ -64,7 +64,7 @@ def tela_principal():
         janela.title("Agendamentos")
         janela.geometry("800x450")
 
-        tk.Label(janela, text="Filtrar por data (AAAA-MM-DD):").pack(pady=5)
+        tk.Label(janela, text="Filtrar por data (DD-MM-YYYY):").pack(pady=5)
         entry_filtro = tk.Entry(janela)
         entry_filtro.pack()
 
@@ -79,21 +79,38 @@ def tela_principal():
 
         # CARREGA NA TELA
         def carregar_tabela(dados):
-            tabela.delete(*tabela.get_children())
-            for linha in dados:
-                tabela.insert("", tk.END, values=linha)
+            # limpar tudo antes
+            for item in tabela.get_children():
+                tabela.delete(item)
+
+            # inserir novos dados
+            for row in dados:
+                tabela.insert("", "end", values=row)
+    
         # FILTRO
         def filtrar():
-            data = entry_filtro.get().strip()
-            if data:
-                dados = listar_agendamentos(data)
+            data_digitada = entry_filtro.get().strip()
+
+            if data_digitada:
+                try:
+                # Converte DD/MM/AAAA → AAAA-MM-DD
+                    data_sql = datetime.strptime(data_digitada, "%d/%m/%Y").strftime("%Y-%m-%d")
+                    dados = listar_agendamentos(data_sql)
+                except ValueError:
+                    messagebox.showerror("Erro", "Data inválida! Use DD/MM/AAAA")
+                    return
             else:
                 dados = listar_agendamentos()
-            carregar_tabela(dados)
-        tk.Button(janela, text="Filtrar", command=filtrar).pack(pady=5)
+            # Formata data para exibir na tabela
+            dados_formatados = [
+                (nome, email, telefone, servico,
+                datetime.strptime(data, "%Y-%m-%d").strftime("%d/%m/%Y"), hora)
+                    for nome, email, telefone, servico, data, hora in dados
+    ]
 
-        # MOSTRA TODOS AO ABRIR
-        carregar_tabela(listar_agendamentos())
+            carregar_tabela(dados_formatados)
+
+        tk.Button(janela, text="Filtrar", command=filtrar).pack(pady=5)
 
     #  SALVAR COM VALIDAÇÃO
     def salvar():
