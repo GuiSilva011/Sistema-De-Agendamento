@@ -46,6 +46,10 @@ def tela_principal():
     entry_hora = tk.Entry(frame, width=30)
     entry_hora.grid(row=5, column=1, pady=5)
 
+    entry_data.bind("<KeyRelease>", lambda e: aplicar_mascara(entry_data, "data"))
+    entry_hora.bind("<KeyRelease>", lambda e: aplicar_mascara(entry_hora, "hora"))
+    entry_telefone.bind("<KeyRelease>", lambda e: aplicar_mascara(entry_telefone, "telefone"))
+
     #  FUNÇÃO LIMPAR CAMPOS
     def limpar():
         entry_nome.delete(0, tk.END)
@@ -105,7 +109,7 @@ def tela_principal():
             return
 
         try:
-            datetime.strptime(data, "%Y-%m-%d")
+            datetime.strptime(data, "%d/%m/%Y")
         except ValueError:
             messagebox.showerror("Erro", "Data inválida! Use AAAA-MM-DD")
             return
@@ -116,10 +120,46 @@ def tela_principal():
             messagebox.showerror("Erro", "Hora inválida! Use HH:MM")
             return
         
-        cadastrar_agendamento(nome, email, telefone, servico, data, hora)
+        data_formatada = datetime.strptime(data, "%d/%m/%Y").strftime("%Y-%m-%d")
+        cadastrar_agendamento(nome, email, telefone, servico, data_formatada, hora)
         messagebox.showinfo("Sucesso", "Agendamento cadastrado!")
 
         limpar()
+    
+    def aplicar_mascara(entry, tipo):
+        texto = entry.get()
+
+        numeros = "".join(filter(str.isdigit, texto))
+
+        if tipo == "telefone":
+            numeros = numeros[:11]
+
+            if len(numeros) > 6:
+                novo = f"({numeros[:2]}) {numeros[2:7]}-{numeros[7:]}"
+            elif len(numeros) > 2:
+                novo = f"({numeros[:2]}) {numeros[2:]}"
+            else:
+                novo: str = numeros
+
+        elif tipo == "data":
+            numeros = numeros[:8]
+            if len(numeros) > 4:
+                novo = f"{numeros[:2]}/{numeros[2:4]}/{numeros[4:]}"
+            elif len(numeros) > 2:
+                novo = f"{numeros[:2]}/{numeros[2:]}"
+            else:
+                novo = numeros
+
+        elif tipo == "hora":
+            numeros = numeros[:4]
+            if len(numeros) > 2:
+                novo = f"{numeros[:2]}:{numeros[2:]}"
+            else:
+                novo = numeros
+
+        entry.delete(0, tk.END)
+        entry.insert(0, novo)
+        entry.icursor(tk.END)  # 🔥 CURSOR SEMPRE NO FINAL
 
     # BOTÕES
     tk.Button(app, text="Cadastrar", width=20, bg="#4CAF50", fg="white", command=salvar).pack(pady=5)
